@@ -1,6 +1,4 @@
-<?php
-?>
-<script>
+<script type="text/javascript">
 
 
 
@@ -90,86 +88,26 @@ var City = function(id, name, district, population){
 
 
 
-function getCountries(continentName){
-	continentName = continentName.replace(" ","_");
-	
-	$.ajax({
-	  url: "api/world/continents/"+continentName+"/countries/format/json",
-	  success: function(data){
-	  	var htmlContent = '<ul class="listview">';
-	  	var _country;
-	  	worldApp.clearCountries();
-	  	for(var i in data){
-	  		console.log(data[i]);
-	  		_country = new Country(data[i].code, data[i].name, data[i].population, data[i].region, data[i].life_expectacy, data[i].gnp);
-	  		htmlContent += '<li><a data-type="country" data-name="'+_country.getCode()+'" href="">'+_country.getName()+'</a></li>';
-	  		worldApp.addCountry(_country);
-	  	}
-	  	htmlContent += "</ul>";
-	  	updateAppContent(htmlContent);
-	  },
-	  error: function(data){
-	  	alert("erro");
-	  },
-	  dataType: "json"
-	});
-};
-
-
-
-function getCities(countryCode){
-	
-	$.ajax({
-	  url: "api/world/countries/"+countryCode+"/cities/format/json",
-	  success: function(data){
-	  	var htmlContent = '<ul class="listview">';
-	  	var _city;
-	  	worldApp.clearCities();
-	  	for(var i in data){
-	  		console.log(data[i]);
-	  		_city = new City(data[i].id, data[i].name, data[i].district, data[i].population);
-	  		htmlContent += '<li><a data-type="city" data-name="'+_city.getId()+'" href="">'+_city.getName()+'</a></li>';
-	  		worldApp.addCity(_city);
-	  	}
-	  	htmlContent += "</ul>";
-	  	updateAppContent(htmlContent);
-	  },
-	  error: function(data){
-	  	alert("erro");
-	  },
-	  dataType: "json"
-	});
-};
-
-
-
-function getCity(cityId){
-
-};
 
 
 
 
-function updateAppContent(htmlContent){
-	$(".app-container").empty();
-	$(".app-container").append(htmlContent);
-	console.log(htmlContent);
-}
 
-
-
-
+/**
+ * Main App Begin
+ */
 var worldApp = new function(){
 		var continent = null;
 		var country = null;
 		var city = null;
-		// 1-view continents; 2- view country; 3 - view cities; 4- view city detail
+		// states: 1-view continents; 2- view country; 3 - view cities; 4- view city detail
 		var state = 1;
 
 		
 		var continents = [];
 		var countries = [];
 		var cities = [];
+
 
 
 		this.goHome = function(){
@@ -180,35 +118,24 @@ var worldApp = new function(){
 		};
 
 
-		function showContinents(){
-			$(".app-container").empty();
-			
-			var htmlContent = '<ul class="listview">';
-	  	var _continent;
-	  	for(var i in continents){
-	  		console.log(continents[i]);
-	  		//_country = new Country(data[i].code, data[i].name, data[i].population, data[i].region, data[i].life_expectacy, data[i].gnp);
-	  		_continent = continents[i];
-	  		htmlContent += '<li><a data-type="continent" data-name="'+_continent.getName()+'" href="">'+_continent.getName()+'</a></li>';
-	  	}
-	  	htmlContent += "</ul>";
-	  	
-			$(".app-container").append(htmlContent);
-		};
-
-
-
+		
 
 		this.setContinent = function(name){
-			setState(2);
+			getCountries(name);
 			continent = new Continent(name);
+			setState(2);
 
 			this.updateBreadcrumb();
 		};
 
+
+
+
 		this.addContinent = function(name){
 			continents.push(new Continent(name));
 		};
+
+
 
 
 		this.addCity = function(city){
@@ -216,26 +143,39 @@ var worldApp = new function(){
 		}
 
 
+
+
 		this.setCountry = function(countryCode){
-			setState(3);
+			getCities(countryCode);
 
 			country = searchCountry(countryCode);
-
-			this.updateBreadcrumb();
+			if(!country){
+				country = null;
+				console.error("Country not found!");
+				return false;
+			}else{
+				showCities();
+				setState(3);
+				this.updateBreadcrumb();
+			}
 		};
+
+
 
 
 		this.setCity = function(cityId){
 			city = searchCity(cityId);
-			console.log('search city with ID:'+cityId);
 			
 			if(!city){
+				city = null;
 				console.log('City not found!');
 			}
 			setState(4);
 			showCityDetails();
 			this.updateBreadcrumb();
 		};
+
+
 
 
 		function searchCountry(countryCode){
@@ -247,11 +187,12 @@ var worldApp = new function(){
 		};
 
 
+
+
 		function searchCity(cityId){
 			cityId = parseInt(cityId);
 
 			for (var i in cities){
-				console.log(cities[i].getId());
 				if(cities[i].getId() === cityId){
 					return cities[i];
 				}
@@ -259,7 +200,59 @@ var worldApp = new function(){
 		};
 
 
+
+
+		function showContinents(){
+			$(".app-container").empty();
+			
+			var htmlContent = '<ul class="listview">';
+	  	var _continent;
+	  	for(var i in continents){
+	  		_continent = continents[i];
+	  		htmlContent += '<li><a data-type="continent" data-name="'+_continent.getName()+'" href="">'+_continent.getName()+'</a></li>';
+	  	}
+	  	htmlContent += "</ul>";
+	  	
+			$(".app-container").append(htmlContent);
+		};
+
+
+
+
+		function showCountries(){
+			$(".app-container").empty();
+			
+			var htmlContent = '<ul class="listview">';
+			var _country;
+			for(var i in countries){
+				_country = countries[i];
+				htmlContent += '<li><a data-type="country" data-name="'+_country.getCode()+'" href="">'+_country.getName()+'</a></li>';
+			}
+			htmlContent += '</ul>';
+	  	
+			$(".app-container").append(htmlContent);
+		};
+
+
 		
+
+		function showCities(){
+			$(".app-container").empty();
+			
+			var htmlContent = '<ul class="listview">';
+			var _city;
+			for(var i in cities){
+				_city = cities[i];
+				htmlContent += '<li><a data-type="city" data-name="'+_city.getId()+'" href="">'+_city.getName()+'</a></li>';
+			}
+			htmlContent += '</ul>';
+	  	
+			$(".app-container").append(htmlContent);
+		};
+
+
+
+
 		function showCityDetails(){
 			$(".app-container").empty();
 			
@@ -271,7 +264,7 @@ var worldApp = new function(){
 	  		htmlContent += '</div>';
 	  	
 			$(".app-container").append(htmlContent);
-		}
+		};
 
 
 
@@ -280,17 +273,23 @@ var worldApp = new function(){
 		};
 
 
+
 		function setState(s){
 			state = s;
 		};
+
+
 
 		this.clearCountries = function(){
 			countries = [];
 		}
 
+
+
 		this.clearCities = function(){
 			cities = [];
 		}
+
 
 
 		// method to update the breadcrumb with current app state
@@ -316,18 +315,59 @@ var worldApp = new function(){
 
 			$('.breadcrumb-list').append(_breadcrumb);
 		};
-};
 
 
 
 
-<?php
-	foreach ($list_continents as $row) {
-		?>
-			<!-- worldApp.addContinent("<?php echo $row->continent; ?>"); -->
-		<?php
-	}
-?>
+		function getCities(countryCode){	
+			$.ajax({
+			  url: "api/world/countries/"+countryCode+"/cities/format/json",
+			  success: function(data){
+			  	var _city;
+			  	worldApp.clearCities();
+			  	for(var i in data){
+			  		_city = new City(data[i].id, data[i].name, data[i].district, data[i].population);
+			  		worldApp.addCity(_city);
+			  	}
+			  },
+			  complete:function(){
+			  	showCities();
+			  },
+			  error: function(data){
+			  	alert("This Country does not have cities!");
+			  },
+			  dataType: "json"
+			});
+		};
+
+
+
+
+		function getCountries(continentName){
+			continentName = continentName.replace(" ","_");
+			
+			$.ajax({
+			  url: "api/world/continents/"+continentName+"/countries/format/json",
+			  success: function(data){
+			  	var _country;
+			  	worldApp.clearCountries();
+			  	for(var i in data){
+			  		_country = new Country(data[i].code, data[i].name, data[i].population, data[i].region, data[i].life_expectacy, data[i].gnp);
+			  		worldApp.addCountry(_country);
+			  	}
+			  },
+			  complete: function(){
+			  	showCountries();
+			  },
+			  error: function(data){
+			  	console.error("No data for this resource:"+continentName);
+			  },
+			  dataType: "json"
+			});
+		};
+
+
+}; 	// END WORLD APP CLASS
 
 
 
@@ -335,38 +375,29 @@ var worldApp = new function(){
 
 
 
-
-
-
+/**
+ * link handler
+ */
 $(document).on( 'click', 'a', function(event){
-	
 	event.preventDefault();
 	var type = this.getAttribute("data-type");
 	var name = this.getAttribute("data-name");
 
-	if(type === 'continent'){
-		// get countries for continent
-		getCountries(name);
+	if(type === 'continent'){ // get countries for continent
 		worldApp.setContinent(name);
 
-	}else if(type === 'country'){
-		// get cities for specified country
-		var countryCode = name;
-		getCities(countryCode);
-
-		worldApp.setCountry(countryCode); // select the country
+	}else if(type === 'country'){	// get cities for specified country		
+		worldApp.setCountry(name); // select the country
 
 	}else if(type === 'city'){
-		// get city details
-		worldApp.setCity(name);
+		worldApp.setCity(name); // get city details
+
 	}else if(type === 'home'){
 		worldApp.goHome();
-	}else{
-			// invalid resource type
-		return false;
-	}
 
-	console.log('continent-->'+name);
+	}else{
+		return false;	// invalid resource type
+	}
 });
 
 
