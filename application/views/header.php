@@ -11,7 +11,7 @@
 
     <link href='http://fonts.googleapis.com/css?family=Copse' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    
 
     <script src="http://code.jquery.com/jquery.js"></script>
     <?php include_once("js/main.js.php"); ?>
