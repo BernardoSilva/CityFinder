@@ -95,21 +95,24 @@ var City = function(id, name, district, population){
 
 /**
  * Main App Begin
+ * app to nav between continents, countries and cities
+ *
  */
 var worldApp = new function(){
-		var continent = null;
-		var country = null;
-		var city = null;
+		var continent 	= null;
+		var country 		= null;
+		var city 				= null;
 		// states: 1-view continents; 2- view country; 3 - view cities; 4- view city detail
-		var state = 1;
-
-		
-		var continents = [];
-		var countries = [];
-		var cities = [];
+		var state 			= 1;
+		var continents 	= [];
+		var countries 	= [];
+		var cities 			= [];
 
 
 
+		/**
+		 * method to navigate to homepage (select continent view)
+		 */
 		this.goHome = function(){
 			setState(1);
 
@@ -119,7 +122,10 @@ var worldApp = new function(){
 
 
 		
-
+		/**
+		 * method used to set the continent selected
+		 * @param string name - name of the continent selected
+		 */
 		this.setContinent = function(name){
 			getCountries(name);
 			continent = new Continent(name);
@@ -130,21 +136,30 @@ var worldApp = new function(){
 
 
 
-
+		/**
+		 * method to create and add a continent to application data
+		 * @param string name - name of the continent to be added
+		 */
 		this.addContinent = function(name){
 			continents.push(new Continent(name));
 		};
 
 
 
-
+		/**
+		 * method to add a city to a list of cities
+		 * @param City object 
+		 */
 		this.addCity = function(city){
 			cities.push(city);
 		}
 
 
 
-
+		/**
+		 * method to set the selected country and display the cities for the selected country
+		 * @param string code of the country selected  
+		 */
 		this.setCountry = function(countryCode){
 			getCities(countryCode);
 
@@ -162,7 +177,10 @@ var worldApp = new function(){
 
 
 
-
+		/**
+		 * method to set the selected city and display the city details
+		 * @param int id - unique id of city from database
+		 */
 		this.setCity = function(cityId){
 			city = searchCity(cityId);
 			
@@ -178,6 +196,10 @@ var worldApp = new function(){
 
 
 
+		/**
+		 * method to search for a country in the list of countries in worldApp
+		 * @param string code - unique code of a country
+		 */
 		function searchCountry(countryCode){
 			for (var i in countries){
 				if(countries[i].getCode() === countryCode){
@@ -189,6 +211,10 @@ var worldApp = new function(){
 
 
 
+		/**
+		 * method to search for a city in the worldApp list of cities
+		 * @param int Id - unqieu identification of city from database
+		 */
 		function searchCity(cityId){
 			cityId = parseInt(cityId);
 
@@ -202,9 +228,11 @@ var worldApp = new function(){
 
 
 
+		/**
+		 * method to display the continents in app list of continents
+		 */
 		function showContinents(){
 			$(".app-container").empty();
-			
 			var htmlContent = '<ul class="listview">';
 	  	var _continent;
 	  	for(var i in continents){
@@ -218,7 +246,9 @@ var worldApp = new function(){
 
 
 
-
+		/**
+		 * method to display a the list of countries in app list of countries
+		 */
 		function showCountries(){
 			$(".app-container").empty();
 			
@@ -235,7 +265,9 @@ var worldApp = new function(){
 
 
 		
-
+		/**
+		 * method to show all cities in app list of cities
+		 */
 		function showCities(){
 			$(".app-container").empty();
 			
@@ -252,7 +284,9 @@ var worldApp = new function(){
 
 
 
-
+		/**
+		 * method to show the details of the current selected city
+		 */
 		function showCityDetails(){
 			$(".app-container").empty();
 			
@@ -268,31 +302,51 @@ var worldApp = new function(){
 
 
 
+		/**
+		 * add a country to the app list of countries
+		 */
 		this.addCountry = function(_country){
 			countries.push(_country);
 		};
 
 
-
+		/**
+		 * set the current app state
+		 * @param int state
+		 * valid states:
+		 * 1- continents view
+		 * 2- contries view
+		 * 3- cities view
+		 * 4- city detail view
+		 */
 		function setState(s){
 			state = s;
 		};
 
 
 
+		/**
+		 * erase all app list of countries
+		 * this is usefull to delete the countries when the continent is changed to keep data relation up to date
+		 */
 		this.clearCountries = function(){
 			countries = [];
 		}
 
 
-
+		/**
+		 * erase all app list of cities
+		 * this is used when the country if changed and we want to have only the cities of the selected country
+		 */
 		this.clearCities = function(){
 			cities = [];
 		}
 
 
 
-		// method to update the breadcrumb with current app state
+		/**
+		 * this method draw the app breadcrumb based on the current app state and the selected options
+		 */
 		this.updateBreadcrumb = function(){
 			$('.breadcrumb-list').empty();
 
@@ -318,7 +372,9 @@ var worldApp = new function(){
 
 
 
-
+		/**
+		 * method to get cities of a specific country and add them to the app list of cities
+		 */
 		function getCities(countryCode){	
 			$.ajax({
 			  url: "api/world/countries/"+countryCode+"/cities/format/json",
@@ -343,6 +399,9 @@ var worldApp = new function(){
 
 
 
+		/**
+		 * method to get 
+		 */
 		function getCountries(continentName){
 			continentName = continentName.replace(" ","_");
 			
