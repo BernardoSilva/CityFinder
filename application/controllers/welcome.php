@@ -19,7 +19,13 @@ class Welcome extends CI_Controller {
 	 */
 	public function index()
 	{
-		$this->load->view('main_template');
+
+		$this->load->model('world_model');
+		$data['list_continents'] = $this->world_model->get_continents();
+
+
+
+		$this->load->view('main_template', $data);
 	}
 }
 

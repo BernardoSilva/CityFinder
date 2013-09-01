@@ -2,10 +2,16 @@ body{
 	font-family: 'Copse', serif;
 	background-image: url("../img/main_bg.png");
 	background-repeat: repeat;
+	padding: 0px !important;
 }
 
 .app-wrapper{
-	margin: auto;
+	margin: 0 auto;
+	width: 320px;
+}
+
+.app-logo{
+	margin: 18px;
 }
 
 
@@ -50,7 +56,7 @@ body{
 
 
 .app-container{
-	background-color: #ccc;
+	background-color: #fff;
 	-webkit-border-radius: 0px 0px 4px 4px;
   border-radius: 0px 0px 4px 4px;	
 }
@@ -115,4 +121,18 @@ ul.listview > li.active > a{
 
 ul.listview > li > a:hover, ul.listview > li.active > a:hover{
 	text-decoration: none;
+}
+
+
+
+.city-detail-container{
+	padding: 14px;
+}
+
+
+.detail-text{
+	display: block;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 14px;
 }
