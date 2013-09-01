@@ -17,17 +17,17 @@ Tools used
 
 ###REST API DOC
 
-##Continents
-`api/world/continents` 
-`api/world/continents/<continent-name>/countries` --> list all countries of continent <continent-name>
-
-##Countries
-`api/world/countries` --> list all countries (not implemented)
-`api/world/countries/<country-code>/cities`  --> list cities of country <country-code>
-
-##Cities
-`api/world/cities` --> list all cities (not implemented)
-`api/world/cities/<city-id>` --> get city <city-id> details
+> ##Continents
+> `api/world/continents` 
+> `api/world/continents/<continent-name>/countries` --> list all countries of continent <continent-name>
+>
+> ##Countries
+> `api/world/countries` --> list all countries (not implemented)
+> `api/world/countries/<country-code>/cities`  --> list cities of country <country-code>
+>
+> ##Cities
+> `api/world/cities` --> list all cities (not implemented)
+> `api/world/cities/<city-id>` --> get city <city-id> details
 
 
 
